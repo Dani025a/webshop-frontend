@@ -1,0 +1,135 @@
+.product-filters {
+    width: 100%;
+    max-width: 300px;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+  }
+  
+  .filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filters-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #000;
+  }
+  
+  .reset-button {
+    color: #01B6DE;
+    font-weight: 500;
+    padding: 0;
+  }
+  
+  .filters-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .filter-group {
+    border-bottom: 1px solid #D9D9D9;
+    padding-bottom: 1.5rem;
+  }
+  
+  .filter-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .filter-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    text-transform: uppercase;
+  }
+  
+  .filter-content {
+    margin-top: 1rem;
+  }
+  
+  .filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filter-option {
+    display: flex;
+    align-items: center;
+  }
+  
+  .filter-slider {
+    padding: 0.5rem 0;
+  }
+  
+  /* Checkbox customization */
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #D9D9D9;
+    border-radius: 4px;
+  }
+  
+  .checkbox[data-state="checked"] {
+    background-color: #01B6DE;
+    border-color: #01B6DE;
+  }
+  
+  /* Radio button customization */
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .radio-group-item {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #D9D9D9;
+    border-radius: 50%;
+  }
+  
+  .radio-group-item[data-state="checked"] {
+    background-color: #01B6DE;
+    border-color: #01B6DE;
+  }
+  
+  /* Slider customization */
+  .slider {
+    height: 4px;
+    background-color: #D9D9D9;
+  }
+  
+  .slider .thumb {
+    width: 16px;
+    height: 16px;
+    background-color: #01B6DE;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .slider .track {
+    height: 4px;
+    background-color: #01B6DE;
+  }
+  
+  @media (max-width: 768px) {
+    .product-filters {
+      max-width: 100%;
+    }
+  }
+  
+  

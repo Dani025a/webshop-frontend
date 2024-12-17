@@ -82,6 +82,11 @@ export default function ProductInformation() {
     }
   }
 
+  const calculateDiscountedPrice = (price: number, discount: Product['discount']) => {
+    if (!discount) return price;
+    return price * (1 - discount.percentage / 100);
+  }
+
   const averageRating = productInformation.reviews ? 
     productInformation.reviews.reduce((sum, review) => sum + review.rating, 0) / productInformation.reviews.length : 0
 
@@ -101,7 +106,7 @@ export default function ProductInformation() {
     if (!productInformation.images || productInformation.images.length === 0) {
       return null;
     }
-
+    
     if (productInformation.images.length <= 4) {
       return (
         <div className="product-information-thumbnail-navigation">
@@ -195,13 +200,21 @@ export default function ProductInformation() {
           <span className="product-information-review-count">({productInformation.reviews?.length || 0})</span>
         </div>
         <div className="product-information-price">
-          <span className="product-information-current-price">${productInformation.price}</span>
-          {productInformation.discount && (
-            <span className="product-information-original-price">
-              ${(productInformation.price / (1 - productInformation.discount.percentage / 100)).toFixed(2)}
+        {productInformation.discount ? (
+          <>
+            <span className="product-information-current-price">
+              ${calculateDiscountedPrice(productInformation.price, productInformation.discount)}
             </span>
-          )}
-        </div>
+            <span className="product-information-original-price">
+              ${productInformation.price}
+            </span>
+          </>
+        ) : (
+          <span className="product-information-current-price">
+            ${productInformation.price}
+          </span>
+        )}
+      </div>
         <div className={`product-information-stock-status ${getStockStatus(productInformation.stock)}`}>
           <span className="product-information-stock-indicator"></span>
           {getStockText(productInformation.stock)}
@@ -246,9 +259,11 @@ export default function ProductInformation() {
             <Heart className="product-information-wishlist-icon" />
           </button>
         </div>
-        <SpecificationsTable filters={productInformation.filters || []} />
       </div>
       <RelatedProducts />
+      <div className="product-specifications">
+        <SpecificationsTable filters={productInformation.filters || []} />
+      </div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import Navbar from '../components/navbar/navbar'
 import { Inter } from 'next/font/google'
 import Breadcrumb from '@/components/ui/breadcrumb'
 import './globals.css'
+import Footer from '@/components/footer/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default function RootLayout({
           <Navbar />
           <Breadcrumb />
           <main>{children}</main>
+          <Footer />
         </CartProvider>
       </body>
     </html>

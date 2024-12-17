@@ -13,6 +13,10 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
     const stringifiedOptions = JSON.stringify(options)
     const stringifiedPrevOptions = JSON.stringify(prevOptionsRef.current)
 
+    console.log('fetchProducts called with options:', options);
+    console.log('Previous options:', prevOptionsRef.current);
+    console.log('Initial options:', initialOptions);
+
     if (stringifiedOptions === stringifiedPrevOptions) {
       console.log('Options unchanged, skipping fetch')
       return
@@ -96,6 +100,80 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
     }
   }, [onProductsUpdate])
 
-  return { products, loading, error, updateProducts, fetchSingleProduct }
+  const getAllProducts = useCallback(async (): Promise<Product[]> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const url = 'http://localhost:1002/api/products'
+      console.log('Fetching all products from:', url)
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch all products: ${response.status} ${response.statusText}`)
+      }
+
+      const data: Product[] = await response.json()
+      console.log('Fetched all products:', data)
+
+      setProducts(data)
+      if (onProductsUpdate) {
+        onProductsUpdate(data)
+      }
+      return data
+    } catch (err) {
+      console.error('Error fetching all products:', err)
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+      setProducts([])
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [onProductsUpdate])
+
+  const searchProducts = useCallback(async (query: string): Promise<Product[]> => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const url = `http://localhost:1002/api/products/search?q=${encodeURIComponent(query)}`
+      console.log('Searching products from:', url)
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to search products: ${response.status} ${response.statusText}`)
+      }
+
+      const data: Product[] = await response.json()
+      console.log('Search results:', data)
+
+      setProducts(data)
+      if (onProductsUpdate) {
+        onProductsUpdate(data)
+      }
+      return data
+    } catch (err) {
+      console.error('Error searching products:', err)
+      setError(err instanceof Error ? err.message : 'An unknown error occurred')
+      setProducts([])
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [onProductsUpdate])
+
+  return { products, loading, error, updateProducts, fetchSingleProduct, getAllProducts, searchProducts }
 }
 

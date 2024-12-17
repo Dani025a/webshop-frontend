@@ -1,16 +1,16 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Menu, Search, ShoppingCart, UserPlus, User, ShoppingBag } from 'lucide-react'
+import { Menu, Search, ShoppingCart, UserPlus, User } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { MainCategory, SubCategory, SubSubCategory, Product } from '../../types/types'
-import { searchProducts } from '../../utils/mockProductSearch'
 import { useCart } from '../../contexts/cartContext'
 import './navbar.css'
 import logo from '../../assets/DGElectronicsLogo.png'
 import { useCategories } from '@/hooks/useCategories'
+import { useProducts } from '../../hooks/useProducts'
 
 export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
@@ -18,12 +18,12 @@ export default function Navbar() {
   const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<Product[]>([])
-  const [isSearching, setIsSearching] = useState(false)
   const megaMenuRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLDivElement>(null)
   const { allCategories } = useCategories()
   const pathname = usePathname()
   const { getCartCount, getCartTotal, addToCart } = useCart()
+  const { getAllProducts, loading: isSearching } = useProducts()
 
   const handleCategoryHover = (categoryName: string) => {
     setActiveCategory(categoryName)
@@ -44,10 +44,19 @@ export default function Navbar() {
   const handleSearch = async (query: string) => {
     setSearchQuery(query)
     if (query.length > 2) {
-      setIsSearching(true)
-      const results = await searchProducts(query)
-      setSearchResults(results)
-      setIsSearching(false)
+      try {
+        const allProducts = await getAllProducts()
+        const filteredProducts = allProducts
+          .filter(product => 
+            product.name.toLowerCase().includes(query.toLowerCase()) ||
+            product.description?.toLowerCase().includes(query.toLowerCase())
+          )
+          .slice(0, 5) // Limit to 5 products
+        setSearchResults(filteredProducts)
+      } catch (error) {
+        console.error('Error searching products:', error)
+        setSearchResults([])
+      }
     } else {
       setSearchResults([])
     }
@@ -71,14 +80,14 @@ export default function Navbar() {
   }, [])
 
   const getCategoryLink = (mainCategory: MainCategory, subCategory?: SubCategory, subSubCategory?: SubSubCategory) => {
-    let parts = ['/category', mainCategory.name]
+    let parts = ['/category', mainCategory.name.toLowerCase().replace(/\s+/g, '-')]
     if (subCategory) {
-      parts.push(subCategory.name)
+      parts.push(subCategory.name.toLowerCase().replace(/\s+/g, '-'))
       if (subSubCategory) {
-        parts.push(subSubCategory.name)
+        parts.push(subSubCategory.name.toLowerCase().replace(/\s+/g, '-'))
       }
     }
-    return parts.map(part => part.toLowerCase().replace(/\s+/g, '-')).join('/')
+    return parts.join('/')
   }
 
   const getProductLink = (product: Product) => {
@@ -89,9 +98,8 @@ export default function Navbar() {
     const mainCategoryName = mainCategory?.name || 'uncategorized';
     const subCategoryName = subCategory?.name || 'uncategorized';
     const subSubCategoryName = subSubCategory?.name || 'uncategorized';
-    const productName = product.name.toLowerCase().replace(/\s+/g, '-');
     
-    return `/product/${productName}/${mainCategoryName}/${subCategoryName}/${subSubCategoryName}`;
+    return `/product/${product.id}/${mainCategoryName}/${subCategoryName}/${subSubCategoryName}`;
   }
 
   return (
@@ -110,38 +118,41 @@ export default function Navbar() {
             <div className="search-container" ref={searchRef}>
               <input 
                 type="text" 
-                placeholder="SEARCH..." 
+                placeholder="Search products..." 
                 className="search-input"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
+                aria-label="Search products"
               />
-              <button className="search-button" aria-label="Search">
+              <button className="search-button" aria-label="Submit search">
                 <Search className="search-icon" />
               </button>
               {searchResults.length > 0 && (
-                <div className="search-results">
+                <div className="search-results" role="listbox">
                   {searchResults.map((product) => (
-                    <div key={product.id} className="search-result-item">
+                    <div key={product.id} className="search-result-item" role="option">
                       <Link href={getProductLink(product)}>
                         <Image 
                           src={product.images?.[0]?.url || "/placeholder.svg"}
                           alt={product.name}
-                          width={50}
-                          height={50}
+                          width={40}
+                          height={40}
+                          className="search-result-image"
                         />
                         <div className="search-result-info">
                           <h3>{product.name}</h3>
-                          <p>{product.subSubCategory?.name}</p>
+                          <p>{product.subSubCategory?.name || product.subCategory?.name || product.category?.name}</p>
                         </div>
                       </Link>
-                      <button onClick={() => addToCart(product)} className="add-to-cart-button">
-                        Add to Cart
-                      </button>
                     </div>
                   ))}
                 </div>
               )}
-              {isSearching && <div className="search-loading">Searching...</div>}
+              {isSearching && (
+                <div className="search-loading" aria-live="polite">
+                  Searching...
+                </div>
+              )}
             </div>
             <div className="nav-actions">
               <Link href="/signup" className={`nav-action ${pathname === '/signup' ? 'active' : ''}`}>
@@ -172,44 +183,42 @@ export default function Navbar() {
                   {category.name}
                 </Link>
                 
-                {activeCategory === category.name && category.subCategories && (
-                  <div 
-                    className="mega-menu" 
-                    ref={megaMenuRef} 
-                    onMouseEnter={() => setActiveCategory(category.name)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="mega-menu-content">
-                      {category.subCategories.map((subcategory: SubCategory) => (
-                        <div 
-                          key={subcategory.id} 
-                          className={`mega-menu-column ${activeSubCategory === subcategory.name ? 'active' : ''}`}
-                          onMouseEnter={() => handleSubCategoryHover(subcategory.name)}
+                <div 
+                  className={`mega-menu ${activeCategory === category.name ? 'active' : ''}`}
+                  ref={megaMenuRef} 
+                  onMouseEnter={() => setActiveCategory(category.name)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="mega-menu-content">
+                    {category.subCategories.map((subcategory: SubCategory) => (
+                      <div 
+                        key={subcategory.id} 
+                        className={`mega-menu-column ${activeSubCategory === subcategory.name ? 'active' : ''}`}
+                        onMouseEnter={() => handleSubCategoryHover(subcategory.name)}
+                      >
+                        <Link 
+                          href={getCategoryLink(category, subcategory)}
+                          className="mega-menu-title"
                         >
-                          <Link 
-                            href={getCategoryLink(category, subcategory)}
-                            className="mega-menu-title"
-                          >
-                            {subcategory.name}
-                          </Link>
-                          {subcategory.subSubCategories && (
-                            <ul className="mega-menu-list">
-                              {subcategory.subSubCategories.map((subsubcategory: SubSubCategory) => (
-                                <li key={subsubcategory.id}>
-                                  <Link 
-                                    href={getCategoryLink(category, subcategory, subsubcategory)}
-                                  >
-                                    {subsubcategory.name}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                          {subcategory.name}
+                        </Link>
+                        {subcategory.subSubCategories && (
+                          <ul className="mega-menu-list">
+                            {subcategory.subSubCategories.map((subsubcategory: SubSubCategory) => (
+                              <li key={subsubcategory.id}>
+                                <Link 
+                                  href={getCategoryLink(category, subcategory, subsubcategory)}
+                                >
+                                  {subsubcategory.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

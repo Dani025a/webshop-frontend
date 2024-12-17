@@ -1,0 +1,30 @@
+.cart-list {
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .cart-list__header {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .cart-list__header {
+      display: grid;
+      grid-template-columns: 1fr 150px 150px 150px 50px;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  
+    .cart-list__header-amount {
+      text-align: center;
+    }
+  
+    .cart-list__header-price,
+    .cart-list__header-total {
+      text-align: right;
+    }
+  }
+  
+  

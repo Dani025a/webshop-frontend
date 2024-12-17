@@ -20,16 +20,13 @@ export default function SpecificationsTable({ filters }: SpecificationsTableProp
                 {filter.name}
               </th>
               <td className="py-3 pl-4 text-left border-b border-gray-200">
-                {filter.type === FilterType.slider ? (
-                  `${filter.filterValues[0]?.value || ''} - ${filter.filterValues[1]?.value || ''}`
-                ) : (
-                  filter.filterValues?.map((value, index) => (
+                {filter.filterValues?.map((value, index) => (
                     <span key={value.id}>
                       {value.value}
                       {index < filter.filterValues.length - 1 ? ', ' : ''}
                     </span>
                   )) || 'No values'
-                )}
+                }
               </td>
             </tr>
           ))}

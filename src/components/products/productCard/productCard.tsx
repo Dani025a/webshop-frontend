@@ -41,17 +41,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const calculateDiscountedPrice = (price: number, discount: Product['discount']) => {
     if (!discount) return price;
-    const currentDate = new Date();
-    if (currentDate >= new Date(discount.startDate) && currentDate <= new Date(discount.endDate)) {
-      return price * (1 - discount.percentage / 100);
-    }
-    return price;
+
+    return price * (1 - discount.percentage / 100);
   }
+  
 
   const productName = product.name;
   const productImage = product.images && product.images.length > 0 ? product.images[0].url : '/placeholder.svg';
   const productPrice = product.price;
   const discountedPrice = calculateDiscountedPrice(productPrice, product.discount);
+
+  console.log("..................", product.discount)
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault()

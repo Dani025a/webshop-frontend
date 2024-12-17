@@ -1,37 +1,71 @@
 'use client'
 
-import * as React from "react"
+import React, { useState, useEffect } from 'react'
 import { Slider } from "@/components/ui/slider"
-import { FilterOption } from "../../../types/types"
+import { Input } from "@/components/ui/input"
+import { FilterDefinition } from '../../../types/types'
+import { TextInput } from '@/components/ui/text-input'
 
 interface SliderFilterProps {
-  filter: FilterOption
-  value: { min: number; max: number }
-  onChange: (value: { min: number; max: number }) => void
-  min?: number
-  max?: number
+  filter: FilterDefinition
+  onChange: (values: { min: number; max: number } | null) => void
+  initialValues?: { min: number; max: number }
 }
 
-export default function SliderFilter({ filter, value, onChange, min = 0, max = 1000 }: SliderFilterProps) {
-  const handleSliderChange = React.useCallback((newValue: number[]) => {
-    onChange({ min: newValue[0], max: newValue[1] })
-  }, [onChange])
+export default function SliderFilter({ filter, onChange, initialValues }: SliderFilterProps) {
+  const minValue = Math.min(...filter.filterValues.map(fv => Number(fv.value)))
+  const maxValue = Math.max(...filter.filterValues.map(fv => Number(fv.value)))
+
+  const [range, setRange] = useState<[number, number]>([
+    initialValues?.min ?? minValue,
+    initialValues?.max ?? maxValue
+  ])
+
+  useEffect(() => {
+    if (initialValues) {
+      setRange([initialValues.min, initialValues.max])
+    }
+  }, [initialValues])
+
+  const handleSliderChange = (newValues: number[]) => {
+    setRange(newValues as [number, number])
+    onChange({ min: newValues[0], max: newValues[1] })
+  }
+
+  const handleInputChange = (index: number, value: string) => {
+    const numValue = Number(value)
+    if (!isNaN(numValue)) {
+      const newRange: [number, number] = [...range]
+      newRange[index] = numValue
+      setRange(newRange)
+      onChange({ min: newRange[0], max: newRange[1] })
+    }
+  }
 
   return (
-    <div className="filter-slider">
-      <h3 className="text-sm font-medium mb-2">{filter.name}</h3>
+    <div className="space-y-4">
+      <div className="flex justify-between space-x-4">
+        <TextInput
+          type="number"
+          value={range[0]}
+          onChange={(e) => handleInputChange(0, e.target.value)}
+          label=''
+        />
+        <TextInput
+          type="number"
+          value={range[1]}
+          onChange={(e) => handleInputChange(1, e.target.value)}
+          label=''
+        />
+      </div>      
       <Slider
-        min={min}
-        max={max}
+        min={minValue}
+        max={maxValue}
         step={1}
-        value={[value.min, value.max]}
+        value={range}
         onValueChange={handleSliderChange}
-        className="my-4"
+        className="w-full"
       />
-      <div className="flex justify-between text-sm">
-        <span>{value.min}</span>
-        <span>{value.max}</span>
-      </div>
     </div>
   )
 }

@@ -29,18 +29,17 @@ export default function ProductsPage() {
     let subCategory: SubCategory | undefined;
     let subSubCategory: SubSubCategory | undefined;
 
-    if (subSubCategorySlug) {
-      mainCategory = allCategories.find(main => main.name.toLowerCase() === mainCategorySlug?.toLowerCase());
-      subCategory = mainCategory?.subCategories?.find(sub => sub.name.toLowerCase() === subCategorySlug?.toLowerCase());
-      subSubCategory = subCategory?.subSubCategories?.find(subsub => subsub.name.toLowerCase() === subSubCategorySlug?.toLowerCase());
-    } else if (subCategorySlug) {
-      mainCategory = allCategories.find(main => main.name.toLowerCase() === mainCategorySlug?.toLowerCase());
-      subCategory = mainCategory?.subCategories?.find(sub => sub.name.toLowerCase() === subCategorySlug?.toLowerCase());
-    } else if (mainCategorySlug) {
-      mainCategory = allCategories.find(main => main.name.toLowerCase() === mainCategorySlug?.toLowerCase());
+    if (mainCategorySlug) {
+      mainCategory = allCategories.find(main => main.name.toLowerCase().replace(/\s+/g, '-') === mainCategorySlug);
+      if (subCategorySlug && mainCategory) {
+        subCategory = mainCategory.subCategories.find(sub => sub.name.toLowerCase().replace(/\s+/g, '-') === subCategorySlug);
+        if (subSubCategorySlug && subCategory) {
+          subSubCategory = subCategory.subSubCategories.find(subsub => subsub.name.toLowerCase().replace(/\s+/g, '-') === subSubCategorySlug);
+        }
+      }
     }
 
-    if (!mainCategory) {
+    if (!mainCategory && allCategories.length > 0) {
       mainCategory = allCategories[0];
     }
 
@@ -64,17 +63,19 @@ export default function ProductsPage() {
       return;
     }
 
-    console.log('Updating filter options:', {
+    console.log('useEffect triggered. Current categoryInfo:', categoryInfo);
+
+    const newFilterOptions = {
       categoryId: categoryInfo.mainCategory.id,
       subCategoryId: categoryInfo.subCategory?.id,
       subSubCategoryId: categoryInfo.subSubCategory?.id,
-    });
+    };
+
+    console.log('Setting new filter options:', newFilterOptions);
 
     setFilterOptions(prevOptions => ({
       ...prevOptions,
-      categoryId: categoryInfo.mainCategory?.id,
-      subCategoryId: categoryInfo.subCategory?.id,
-      subSubCategoryId: categoryInfo.subSubCategory?.id,
+      ...newFilterOptions,
     }));
 
     fetchFilters(
@@ -82,14 +83,13 @@ export default function ProductsPage() {
       subSubCategorySlug ? 'subsub' : subCategorySlug ? 'sub' : 'main'
     );
 
-    updateProducts({
-      categoryId: categoryInfo.mainCategory.id,
-      subCategoryId: categoryInfo.subCategory?.id,
-      subSubCategoryId: categoryInfo.subSubCategory?.id,
-    });
+    console.log('Calling updateProducts with:', newFilterOptions);
+    updateProducts(newFilterOptions);
+
   }, [categoryInfo, fetchFilters, subCategorySlug, subSubCategorySlug, updateProducts, categoriesLoading]);
 
   const handleFiltersChange = useCallback((newFilters: Partial<GetProductsOptions>) => {
+    console.log('handleFiltersChange called with:', newFilters);
     const updatedFilters: GetProductsOptions = {
       ...filterOptions,
       ...newFilters,
@@ -105,6 +105,7 @@ export default function ProductsPage() {
       updatedFilters.categoryId = categoryInfo.mainCategory?.id;
     }
 
+    console.log('Calling updateProducts with:', updatedFilters);
     console.log('Handling filter change:', updatedFilters);
     setFilterOptions(updatedFilters);
     updateProducts(updatedFilters);
@@ -121,7 +122,6 @@ export default function ProductsPage() {
     router.push(`${window.location.pathname}?${newSearchParams.toString()}`, { scroll: false });
   }, [filterOptions, updateProducts, searchParams, router, categoryInfo]);
 
-
   return (
     <div className="products-page">
       <h1 className="products-title">Our Products</h1>
@@ -133,8 +133,7 @@ export default function ProductsPage() {
             appliedFilters={filterOptions.filters || []}
           />
         </aside>
-
-          <ProductList products={products} />
+        <ProductList products={products} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product } from '../types/types';
+import { Product } from '@/types/types';
 
 interface CartItem extends Product {
   quantity: number;
@@ -13,6 +13,7 @@ interface CartContextType {
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
   getCartTotal: () => number;
+  getSumTotal: () => number;
   getCartCount: () => number;
 }
 
@@ -76,6 +77,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart([]);
   };
 
+  const getSumTotal = () => {
+    const total = cart.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+    return Number(total.toFixed(2));
+  };
+
+
   const getCartTotal = () => {
     const total = cart.reduce((total, item) => {
       const itemPrice = item.discount
@@ -92,7 +101,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, getCartTotal, getCartCount }}
+      value={{ cart, addToCart, removeFromCart, clearCart, getCartTotal, getCartCount, getSumTotal }}
     >
       {children}
     </CartContext.Provider>

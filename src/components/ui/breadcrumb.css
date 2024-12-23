@@ -1,8 +1,15 @@
 .breadcrumb-wrapper {
     width: 100%;
     border-bottom: 1px solid #e5e7eb;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
   
+  .breadcrumb-wrapper::-webkit-scrollbar {
+    display: none;
+  }
   .breadcrumb-container {
     padding: 0.75rem 0;
     color: black;
@@ -10,25 +17,24 @@
   }
   
   .breadcrumb-content {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 0 1rem;
+    min-width: 100%;
   }
   
   .breadcrumb-segment {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    white-space: nowrap;
   }
   
   .breadcrumb-separator {
     width: 16px;
     height: 16px;
     color: black;
+    flex-shrink: 0;
+    margin: 0 0.25rem;
   }
   
   .breadcrumb-item {
@@ -37,6 +43,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     transition: color 0.2s;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .breadcrumb-item:not(.current):hover {
@@ -50,17 +59,27 @@
   }
   
   @media (max-width: 640px) {
+    .breadcrumb-wrapper {
+      padding-bottom: 0.25rem;
+    }
+  
+    .breadcrumb-container {
+      padding: 0.5rem 0;
+    }
+  
     .breadcrumb-content {
       padding: 0 0.5rem;
     }
   
     .breadcrumb-item {
       font-size: 0.75rem;
+      max-width: 100px;
     }
   
     .breadcrumb-separator {
       width: 14px;
       height: 14px;
+      margin: 0 0.125rem;
     }
   }
   

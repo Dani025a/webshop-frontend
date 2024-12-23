@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import { Star, Heart, ChevronUp, ChevronDown, Plus, Minus, Trash2 } from 'lucide-react'
+import { Star, Heart, ChevronUp, ChevronDown, Plus, Minus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useCart } from '@/contexts/cartContext'
 import { useProducts } from '@/hooks/useProducts'
+import { useWishlist } from '@/hooks/useWishlist'
 import { Product } from '@/types/types'
 import './productInformation.css'
 import SpecificationsTable from '@/components/products/specificationsTable/specificationsTable'
@@ -13,9 +14,9 @@ import RelatedProducts from '@/components/products/relatedProducts/relatedProduc
 
 export default function ProductInformation() {
   const [selectedImage, setSelectedImage] = useState(0)
-  const [isInWishlist, setIsInWishlist] = useState(false)
   const { cart, addToCart, removeFromCart } = useCart()
   const { products, loading, error, fetchSingleProduct } = useProducts()
+  const { wishlistProducts, addToWishlist, removeFromWishlist, loading: wishlistLoading } = useWishlist()
   const [productInformation, setProductInformation] = useState<Product | null>(null)
   const params = useParams()
   const [startIndex, setStartIndex] = useState(0)
@@ -43,6 +44,15 @@ export default function ProductInformation() {
     }
   }, [products])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setStartIndex(0);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
   if (!productInformation) return <div>Product not found</div>
@@ -50,12 +60,24 @@ export default function ProductInformation() {
   const cartItem = cart.find(item => item.id === productInformation.id)
   const quantity = cartItem ? cartItem.quantity : 0
 
+  const isInWishlist = wishlistProducts?.products.some(item => item.product.id === productInformation.id) || false
+
   const handleThumbnailClick = (index: number) => {
     setSelectedImage(index)
   }
 
-  const handleWishlistToggle = () => {
-    setIsInWishlist(!isInWishlist)
+  const handleWishlistToggle = async () => {
+    if (wishlistLoading || !productInformation.id) return;
+
+    try {
+      if (isInWishlist) {
+        await removeFromWishlist(productInformation.id);
+      } else {
+        await addToWishlist(productInformation);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+    }
   }
 
   const handleQuantityChange = (newQuantity: number) => {
@@ -107,6 +129,8 @@ export default function ProductInformation() {
       return null;
     }
     
+    const isMobile = window.innerWidth <= 768;
+    
     if (productInformation.images.length <= 4) {
       return (
         <div className="product-information-thumbnail-navigation">
@@ -134,7 +158,7 @@ export default function ProductInformation() {
           className="product-information-thumbnail-nav-button"
           onClick={() => setStartIndex((prevIndex) => (prevIndex - 1 + productInformation.images.length) % productInformation.images.length)}
         >
-          <ChevronUp size={24} />
+          {isMobile ? <ChevronLeft size={24} /> : <ChevronUp size={24} />}
         </button>
         {[...Array(visibleThumbnails)].map((_, index) => {
           const imageIndex = (startIndex + index) % productInformation.images.length
@@ -158,7 +182,7 @@ export default function ProductInformation() {
           className="product-information-thumbnail-nav-button"
           onClick={() => setStartIndex((prevIndex) => (prevIndex + 1) % productInformation.images.length)}
         >
-          <ChevronDown size={24} />
+          {isMobile ? <ChevronRight size={24} /> : <ChevronDown size={24} />}
         </button>
       </div>
     );
@@ -255,6 +279,7 @@ export default function ProductInformation() {
             className={`product-information-wishlist-button ${isInWishlist ? 'in-wishlist' : ''}`}
             onClick={handleWishlistToggle}
             aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+            disabled={wishlistLoading}
           >
             <Heart className="product-information-wishlist-icon" />
           </button>

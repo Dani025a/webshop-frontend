@@ -1,8 +1,9 @@
 'use client'
 import React from 'react';
 import { SignUpForm } from '../../components/signup/form/form'
+import { PublicRoute } from '@/components/publicRoutes';
 
-export default function Signup() {
+function Signup() {
   return (
     <div>
       <SignUpForm />
@@ -10,3 +11,4 @@ export default function Signup() {
   );
 }
 
+export default PublicRoute(Signup)

@@ -2,6 +2,53 @@ export enum Status {
     active = 'active',
     inactive = 'inactive',
   }
+
+  export interface Order {
+    id?: string;
+    userid: number;
+    status?: string;
+    totalPrice: number;
+    totalDiscountedPrice: number;
+    totalItems: number;
+    orderDate?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
+    currency: string;
+    products: OrderProduct[];
+  }
+
+  export interface OrderProduct {
+    product: Product;
+  }
+
+  export interface Product {
+    id?: number;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    stock: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    discountId?: number;
+    discount?: Discount;
+    brand: string;
+    weight: number;
+    length: number;
+    width: number;
+    height: number;
+    status: Status;
+    seoTitle: string;
+    seoDescription: string;
+    metaKeywords: string;
+    subSubCategoryId?: number;
+    subSubCategory?: SubSubCategory;
+    images?: Image[];
+    reviews?: Review[];
+    filters?: FilterOption[];
+  }
+  
+  
   
   export interface Product {
     id?: number;
@@ -169,4 +216,15 @@ export enum Status {
     name: string;
     type: FilterType;
     filterValues: FilterValue[];
+  }
+
+  export interface Wishlist {
+    id: string;
+    userId: string;
+    products: WishlistProduct[];
+    createdAt: string;
+    updatedAt: string;
+  }
+  export interface WishlistProduct {
+    product: Product;
   }

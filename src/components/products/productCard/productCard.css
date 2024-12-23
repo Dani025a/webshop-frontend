@@ -9,7 +9,8 @@
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     border: 1px solid #D9D9D9;
-    height: 450px; 
+    height: auto;
+    min-height: 400px;
   }
   
   .product-card:hover {
@@ -19,26 +20,26 @@
   
   .discount-badge {
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: 0.5rem;
+    left: 0.5rem;
     background-color: #ff0000;
     color: white;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
   
   .product-image {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
-    padding: 1rem;
+    height: 180px;
+    padding: 0.5rem;
   }
   
   .product-image img {
@@ -54,7 +55,7 @@
   }
   
   .product-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
     margin: 0;
     color: #000;
@@ -73,8 +74,8 @@
   }
   
   .star {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     stroke: #FFB800;
     stroke-width: 2;
     fill: none;
@@ -90,7 +91,7 @@
   
   .review-count {
     color: #666;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
   
   .product-price {
@@ -102,13 +103,13 @@
   .original-price {
     color: #666;
     text-decoration: line-through;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
   
   .current-price {
     color: #000;
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
   
   .product-actions {
@@ -123,13 +124,14 @@
     background-color: #f8f8f8;
     border: none;
     border-radius: 4px;
-    padding: 0.75rem;
+    padding: 0.6rem;
     font-weight: bold;
     color: #000;
     cursor: pointer;
     transition: background-color 0.2s;
     text-transform: uppercase;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+    height: 40px;
   }
   
   .add-to-cart:hover {
@@ -170,19 +172,21 @@
     background-color: #f0f0f0;
     border-radius: 20px;
     overflow: hidden;
-    width: 120px;
+    width: 100px;
     justify-content: space-between;
+    height: 40px;
   }
   
   .cart-button {
     background-color: transparent;
     border: none;
-    padding: 8px 12px;
+    padding: 6px 10px;
     cursor: pointer;
     transition: background-color 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 40px;
   }
   
   .cart-button:hover {
@@ -190,8 +194,9 @@
   }
   
   .quantity {
-    padding: 0 12px;
+    padding: 0 8px;
     font-weight: bold;
+    font-size: 0.9rem;
   }
   
   .remove-all-button {
@@ -199,16 +204,136 @@
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 8px;
+    padding: 6px;
     cursor: pointer;
     transition: background-color 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 40px;
+    width: 40px;
   }
   
   .remove-all-button:hover {
     background-color: #cc0000;
+  }
+  
+  @media (max-width: 768px) {
+    .product-card {
+      padding: 0.75rem;
+      gap: 0.75rem;
+      min-height: 350px;
+    }
+  
+    .product-image {
+      height: 150px;
+    }
+  
+    .product-title {
+      font-size: 0.85rem;
+    }
+  
+    .star {
+      width: 12px;
+      height: 12px;
+    }
+  
+    .review-count {
+      font-size: 0.7rem;
+    }
+  
+    .current-price {
+      font-size: 1rem;
+    }
+  
+    .add-to-cart {
+      padding: 0.6rem;
+      font-size: 0.8rem;
+      height: 40px;
+    }
+  
+    .cart-controls {
+      width: 110px;
+      height: 40px;
+    }
+  
+    .cart-button {
+      padding: 8px 12px;
+      width: 40px;
+    }
+  
+    .remove-all-button {
+      padding: 8px;
+      width: 40px;
+      height: 40px;
+    }
+    .wishlist-button {
+      padding: 0.5rem;
+    }
+  
+    .wishlist-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-card {
+      padding: 0.5rem;
+      gap: 0.5rem;
+      min-height: 300px;
+    }
+  
+    .product-image {
+      height: 120px;
+    }
+  
+    .product-title {
+      font-size: 0.8rem;
+    }
+  
+    .star {
+      width: 10px;
+      height: 10px;
+    }
+  
+    .review-count {
+      font-size: 0.65rem;
+    }
+  
+    .current-price {
+      font-size: 0.9rem;
+    }
+  
+    .add-to-cart {
+      padding: 0.6rem;
+      font-size: 0.75rem;
+      height: 36px;
+    }
+  
+    .cart-controls {
+      width: 100px;
+      height: 36px;
+    }
+  
+    .cart-button {
+      padding: 6px 10px;
+      width: 36px;
+    }
+  
+    .remove-all-button {
+      padding: 6px;
+      width: 36px;
+      height: 36px;
+    }
+    .wishlist-button {
+      padding: 0.4rem;
+    }
+  
+    .wishlist-icon {
+      width: 22px;
+      height: 22px;
+    }
   }
   
   

@@ -1,0 +1,228 @@
+.checkout-page {
+    min-height: 100vh;
+    background-color: #f7f7f7;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  
+  .page-title {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 48px;
+    color: #333;
+  }
+  
+  .progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 0 auto 48px;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background-color: #3b82f6;
+    transition: width 0.5s ease-out;
+  }
+  
+  .checkout-content {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .checkout-content:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .summary-header,
+  .payment-header {
+    margin-bottom: 24px;
+  }
+  
+  .summary-header h2,
+  .payment-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .summary-header p,
+  .payment-header p {
+    color: #666;
+  }
+  
+  .summary-items {
+    margin-bottom: 24px;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+  
+  .item-name {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .item-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .item-quantity {
+    font-size: 14px;
+    color: #666;
+    margin-right: 16px;
+  }
+  
+  .item-price {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .summary-totals {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+  }
+  
+  .total,
+  .discounted-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .discounted-total {
+    color: #22c55e;
+  }
+  
+  .create-order-button,
+  .pay-button {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  
+  .create-order-button:hover,
+  .pay-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .create-order-button:disabled,
+  .pay-button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .arrow-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+  }
+  
+  .card-element-container {
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+  }
+  
+  .card-element-container:hover {
+    border-color: #3b82f6;
+  }
+  
+  .error-message {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #ef4444;
+  }
+  
+  .order-error {
+    margin-top: 32px;
+    text-align: center;
+    padding: 16px;
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #ef4444;
+  }
+  
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3b82f6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 24px 16px;
+    }
+  
+    .page-title {
+      font-size: 28px;
+      margin-bottom: 32px;
+    }
+  
+    .progress-bar-container {
+      margin-bottom: 32px;
+    }
+  }
+  
+  

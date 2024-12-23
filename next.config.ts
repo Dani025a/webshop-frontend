@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         hostname: 'storage.googleapis.com',
         pathname: '/dgelectronics-product-images/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**', // Allows all hostnames
+      },
     ],
   },
 }

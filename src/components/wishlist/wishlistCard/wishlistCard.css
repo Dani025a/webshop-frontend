@@ -1,0 +1,150 @@
+.wishlist-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  @media (min-width: 1024px) {
+    .wishlist-card {
+      grid-template-columns: 1fr 150px 50px;
+      align-items: center;
+    }
+  }
+  
+  .wishlist-card__product {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .wishlist-card__image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  
+  .wishlist-card__image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+  }
+  
+  .wishlist-card__image img {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+  
+  .wishlist-card__image img {
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .wishlist-card__details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .wishlist-card__name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .wishlist-card__description {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .wishlist-card__mobile-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  
+  @media (min-width: 1024px) {
+    .wishlist-card__mobile-price {
+      display: none;
+    }
+  }
+  
+  .wishlist-card__price {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .wishlist-card__price {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
+  
+  .wishlist-card__price-original {
+    font-weight: 600;
+    color: #000000;
+  }
+  
+  .wishlist-card__price-discounted {
+    font-weight: 600;
+    color: #22c55e;
+  }
+  
+  .wishlist-card__price-strikethrough {
+    text-decoration: line-through;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .wishlist-card__discount {
+    display: inline-block;
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  .wishlist-card__remove {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  
+  .wishlist-card__remove:hover {
+    color: #000000;
+  }
+  
+  .wishlist-card__remove-mobile {
+    display: block;
+  }
+  
+  .wishlist-card__remove-desktop {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .wishlist-card__remove-mobile {
+      display: none;
+    }
+  
+    .wishlist-card__remove-desktop {
+      display: block;
+    }
+  }
+  
+  

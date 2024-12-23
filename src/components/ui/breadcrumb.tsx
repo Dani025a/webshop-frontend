@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
@@ -9,6 +9,7 @@ import './breadcrumb.css'
 export default function Breadcrumb() {
   const pathname = usePathname()
   const [productName, setProductName] = useState<string | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
     const fetchProductName = async () => {
@@ -30,7 +31,19 @@ export default function Breadcrumb() {
     fetchProductName()
   }, [pathname])
 
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth
+    }
+  }, [pathname, productName])
+
   if (pathname === '/') return null
+
+  const formatSegment = (str: string, forUrl = false) => {
+    const decoded = decodeURIComponent(str);
+    const hyphenated = decoded.replace(/\s+/g, '-');
+    return forUrl ? hyphenated.toLowerCase() : hyphenated.toUpperCase();
+  };
 
   const generateBreadcrumbs = () => {
     const segments = pathname.split('/').filter(Boolean)
@@ -39,54 +52,51 @@ export default function Breadcrumb() {
     let breadcrumbs = []
 
     if (isProductPage) {
-      // For product pages, we want to show the full hierarchy
       breadcrumbs = [
         { label: 'FRONT PAGE', path: '/' },
-        { label: segments[2].toUpperCase().replace(/-/g, ' '), path: `/category/${segments[2]}` },
-        { label: segments[3].toUpperCase().replace(/-/g, ' '), path: `/category/${segments[2]}/${segments[3]}` },
-        { label: segments[4].toUpperCase().replace(/-/g, ' '), path: `/category/${segments[2]}/${segments[3]}/${segments[4]}` },
+        { label: formatSegment(segments[2]), path: `/category/${formatSegment(segments[2], true)}` },
+        { label: formatSegment(segments[3]), path: `/category/${formatSegment(segments[2], true)}/${formatSegment(segments[3], true)}` },
+        { label: formatSegment(segments[4]), path: `/category/${formatSegment(segments[2], true)}/${formatSegment(segments[3], true)}/${formatSegment(segments[4], true)}` },
         { label: productName || 'Loading...', path: '#', isLast: true }
       ]
     } else if (segments[0] === 'category') {
-      // For category pages
       breadcrumbs = [{ label: 'FRONT PAGE', path: '/' }]
       segments.slice(1).forEach((segment, index) => {
         breadcrumbs.push({
-          label: segment.toUpperCase().replace(/-/g, ' '),
-          path: `/category/${segments.slice(1, index + 2).join('/')}`,
+          label: formatSegment(segment),
+          path: `/category/${segments.slice(1, index + 2).map(s => formatSegment(s, true)).join('/')}`,
           isLast: index === segments.length - 2
         })
       })
     } else {
-      // For other pages
       breadcrumbs = [{ label: 'FRONT PAGE', path: '/' }]
       segments.forEach((segment, index) => {
         breadcrumbs.push({
-          label: segment.toUpperCase().replace(/-/g, ' '),
-          path: `/${segments.slice(0, index + 1).join('/')}`,
+          label: formatSegment(segment),
+          path: `/${segments.slice(0, index + 1).map(s => formatSegment(s, true)).join('/')}`,
           isLast: index === segments.length - 1
         })
       })
     }
-  
+
     return breadcrumbs
   }
 
   const breadcrumbs = generateBreadcrumbs()
 
   return (
-    <div className="breadcrumb-wrapper">
+    <div className="breadcrumb-wrapper" ref={scrollContainerRef}>
       <nav className="breadcrumb-container" aria-label="Breadcrumb">
         <div className="breadcrumb-content">
           {breadcrumbs.map((breadcrumb, index) => (
             <span key={breadcrumb.path} className="breadcrumb-segment">
               {index > 0 && <ChevronRight className="breadcrumb-separator" aria-hidden="true" />}
               {breadcrumb.isLast ? (
-                <span className="breadcrumb-item current" aria-current="page">
+                <span className="breadcrumb-item current" aria-current="page" title={breadcrumb.label}>
                   {breadcrumb.label}
                 </span>
               ) : (
-                <Link href={breadcrumb.path} className="breadcrumb-item">
+                <Link href={breadcrumb.path} className="breadcrumb-item" title={breadcrumb.label}>
                   {breadcrumb.label}
                 </Link>
               )}

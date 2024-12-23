@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { FilterOption } from '../types/types';
+import { FilterOption } from '@/types/types';
 
 interface UseFiltersResult {
   filters: FilterOption[];
@@ -22,7 +22,6 @@ const useFilters = (initialCategoryId: number, initialLevel: 'main' | 'sub' | 's
     if (filtersFetched && 
         currentParams.categoryId === prevParams.categoryId && 
         currentParams.level === prevParams.level) {
-      console.log('Filters already fetched for this category and level, skipping fetch');
       return;
     }
 
@@ -30,7 +29,7 @@ const useFilters = (initialCategoryId: number, initialLevel: 'main' | 'sub' | 's
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:1002/api/filters?categoryId=${categoryId}&level=${level}`);
+      const response = await fetch(`http://localhost:1002/api/filters/all?categoryId=${categoryId}&level=${level}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch filters: ${response.status} ${response.statusText}`);

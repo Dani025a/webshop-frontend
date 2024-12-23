@@ -1,0 +1,67 @@
+.related-products .group {
+  display: flex;
+  flex-direction: column;
+}
+
+.related-products .relative {
+  position: relative;
+}
+
+.related-products .bg-red-500 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+@media (max-width: 640px) {
+  .related-products {
+    margin-top: 1.5rem;
+  }
+
+  .related-products h2 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+  }
+
+  .related-products .grid {
+    gap: 0.75rem;
+  }
+
+  .related-products .group {
+    padding: 0.75rem;
+  }
+
+  .related-products h3 {
+    font-size: 0.75rem;
+  }
+
+  .related-products .text-base {
+    font-size: 0.875rem;
+  }
+
+  .related-products .text-xs {
+    font-size: 0.625rem;
+  }
+
+  .related-products button {
+    padding: 0.375rem;
+  }
+
+  .related-products button svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .related-products .bg-red-500 {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .related-products .grid {
+    grid-template-columns: 1fr;
+  }
+}
+

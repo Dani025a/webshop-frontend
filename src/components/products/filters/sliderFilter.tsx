@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { FilterDefinition } from '../../../types/types'
+import { FilterDefinition } from '@/types/types'
 import { TextInput } from '@/components/ui/text-input'
 
 interface SliderFilterProps {
@@ -50,12 +49,14 @@ export default function SliderFilter({ filter, onChange, initialValues }: Slider
           value={range[0]}
           onChange={(e) => handleInputChange(0, e.target.value)}
           label=''
+          className="w-full text-sm p-2"
         />
         <TextInput
           type="number"
           value={range[1]}
           onChange={(e) => handleInputChange(1, e.target.value)}
           label=''
+          className="w-full text-sm p-2"
         />
       </div>      
       <Slider

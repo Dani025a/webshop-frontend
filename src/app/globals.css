@@ -75,3 +75,51 @@
   }
 }
 
+@media (max-width: 768px) {
+  .filter-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-title {
+    margin-bottom: 0.5rem;
+  }
+
+  .filter-options {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .filter-option {
+    padding: 0.5rem 0;
+  }
+
+  .checkbox, .radio-group-item, .slider .thumb {
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  .checkbox, .radio-group-item {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .text-sm {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .space-y-2 > * + * {
+    margin-top: 0.75rem;
+  }
+
+  .space-x-3 > * + * {
+    margin-left: 0.75rem;
+  }
+
+  .filter-option label {
+    padding-left: 0.5rem;
+  }
+}
+

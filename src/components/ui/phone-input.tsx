@@ -14,7 +14,6 @@ export function PhoneInput({ value, onChange, error, onBlur }: PhoneInputProps) 
       <div className="input-group">
         <select className="country-code input" defaultValue="+45">
           <option value="+45">+45</option>
-          {/* Add more country codes as needed */}
         </select>
         <input
           type="tel"

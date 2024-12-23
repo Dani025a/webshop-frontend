@@ -2,10 +2,14 @@
 
 import { useCart } from '@/contexts/cartContext'
 import { CartList } from '@/components/cart/cartList/cartList'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
 import './cart.css'
 
 export default function CartPage() {
-    const { cart, removeFromCart, addToCart, getCartTotal } = useCart()
+    const { cart, removeFromCart, addToCart, getCartTotal, getSumTotal } = useCart()
+    const { user } = useAuth()
+    const router = useRouter()
   
     const handleQuantityChange = (productId: number, newQuantity: number) => {
       const item = cart.find(item => item.id === productId)
@@ -32,16 +36,22 @@ export default function CartPage() {
       }
     }
   
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    const totalDiscount = cart.reduce((sum, item) => {
-      if (item.discount) {
-        const discountedPrice = item.price * (1 - (item.discount.percentage / 100))
-        return sum + (item.price - discountedPrice) * item.quantity
-      }
-      return sum
-    }, 0)
-    const total = subtotal - totalDiscount
+    const totalDiscount = getSumTotal() - getCartTotal()
   
+    const handleCheckout = () => {
+      if (cart.length === 0) {
+        alert('Your cart is empty. Add items before proceeding to checkout.')
+        return
+      }
+      
+      if (!user) {
+        router.push('/login?redirect=/checkout')
+        return
+      }
+      
+      router.push('/checkout')
+    }
+
     return (
       <div className="cart">
         <h1 className="cart__title">ITEMS IN THE CART</h1>
@@ -55,7 +65,7 @@ export default function CartPage() {
         <div className="cart__summary">
           <div className="cart__summary-row">
             <span className="cart__summary-label">SUM:</span>
-            <span className="cart__summary-value">${subtotal.toFixed(2)}</span>
+            <span className="cart__summary-value">${getSumTotal().toFixed(2)}</span>
           </div>
           {totalDiscount > 0 && (
             <div className="cart__summary-row">
@@ -65,14 +75,14 @@ export default function CartPage() {
           )}
           <div className="cart__summary-row">
             <span className="cart__summary-label">TOTAL:</span>
-            <span className="cart__summary-value">${total.toFixed(2)}</span>
+            <span className="cart__summary-value">${getCartTotal().toFixed(2)}</span>
           </div>
           
-          <button className="cart__checkout">
+          <button className="cart__checkout" onClick={handleCheckout}>
             GO TO CHECKOUT
           </button>
         </div>
       </div>
     )
   }
-  
+

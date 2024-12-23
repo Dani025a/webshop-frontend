@@ -8,11 +8,14 @@ import { GetProductsOptions, Product, MainCategory, SubCategory, SubSubCategory 
 import { useCategories } from '@/hooks/useCategories';
 import useFilters from '@/hooks/useFilters';
 import { useProducts } from '@/hooks/useProducts';
+import { Button } from "@/components/ui/button"
+import { Filter } from 'lucide-react';
 import '../products.css';
 
 export default function ProductsPage() {
   const [filterOptions, setFilterOptions] = useState<GetProductsOptions>({});
   const [products, setProducts] = useState<Product[]>([]);
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -43,7 +46,6 @@ export default function ProductsPage() {
       mainCategory = allCategories[0];
     }
 
-    console.log('Category info:', { mainCategory, subCategory, subSubCategory });
     return { mainCategory, subCategory, subSubCategory };
   }, [allCategories, mainCategorySlug, subCategorySlug, subSubCategorySlug, categoriesLoading]);
 
@@ -63,15 +65,11 @@ export default function ProductsPage() {
       return;
     }
 
-    console.log('useEffect triggered. Current categoryInfo:', categoryInfo);
-
     const newFilterOptions = {
       categoryId: categoryInfo.mainCategory.id,
       subCategoryId: categoryInfo.subCategory?.id,
       subSubCategoryId: categoryInfo.subSubCategory?.id,
     };
-
-    console.log('Setting new filter options:', newFilterOptions);
 
     setFilterOptions(prevOptions => ({
       ...prevOptions,
@@ -83,34 +81,27 @@ export default function ProductsPage() {
       subSubCategorySlug ? 'subsub' : subCategorySlug ? 'sub' : 'main'
     );
 
-    console.log('Calling updateProducts with:', newFilterOptions);
     updateProducts(newFilterOptions);
 
   }, [categoryInfo, fetchFilters, subCategorySlug, subSubCategorySlug, updateProducts, categoriesLoading]);
 
   const handleFiltersChange = useCallback((newFilters: Partial<GetProductsOptions>) => {
-    console.log('handleFiltersChange called with:', newFilters);
     const updatedFilters: GetProductsOptions = {
       ...filterOptions,
       ...newFilters,
     };
 
-    // Remove filters with null values
     if (updatedFilters.filters) {
       updatedFilters.filters = updatedFilters.filters.filter(filter => filter.values !== null);
     }
 
-    // Ensure at least one category ID is maintained
     if (!updatedFilters.subSubCategoryId && !updatedFilters.subCategoryId && !updatedFilters.categoryId) {
       updatedFilters.categoryId = categoryInfo.mainCategory?.id;
     }
 
-    console.log('Calling updateProducts with:', updatedFilters);
-    console.log('Handling filter change:', updatedFilters);
     setFilterOptions(updatedFilters);
     updateProducts(updatedFilters);
     
-    // Update URL with new filters
     const newSearchParams = new URLSearchParams(searchParams);
     if (updatedFilters.filters && updatedFilters.filters.length > 0) {
       newSearchParams.set('filters', JSON.stringify(updatedFilters.filters));
@@ -122,16 +113,28 @@ export default function ProductsPage() {
     router.push(`${window.location.pathname}?${newSearchParams.toString()}`, { scroll: false });
   }, [filterOptions, updateProducts, searchParams, router, categoryInfo]);
 
+  const toggleFilterMenu = () => {
+    setIsFilterMenuOpen(!isFilterMenuOpen);
+  };
+
   return (
     <div className="products-page">
       <h1 className="products-title">Our Products</h1>
+      <Button className="filter-menu-button" onClick={toggleFilterMenu}>
+        <Filter size={16} />
+        Filters
+      </Button>
       <div className="products-content">
-        <aside className="product-filters-sidebar">
+        <aside className={`product-filters-sidebar ${isFilterMenuOpen ? 'open full' : ''}`}>
           <ProductFilters 
             filters={filters}
             onFiltersChange={handleFiltersChange}
             appliedFilters={filterOptions.filters || []}
+            onClose={toggleFilterMenu}
           />
+          <button className="show-results-button" onClick={toggleFilterMenu}>
+            Show Results
+          </button>
         </aside>
         <ProductList products={products} />
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { MainCategory, SubCategory, SubSubCategory, ApiError } from '../types/types';
+import { MainCategory, SubCategory, SubSubCategory } from '@/types/types';
 
 interface UseCategoriesResult {
   allCategories: MainCategory[];
@@ -25,7 +25,7 @@ export function useCategories(): UseCategoriesResult {
   const [mainCategory, setMainCategory] = useState<MainCategory | null>(null);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [subSubCategories, setSubSubCategories] = useState<SubSubCategory[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Update: Set initial loading state to true
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const fetchStatusRef = useRef<FetchStatus>({
     allCategoriesFetched: false,
@@ -39,12 +39,11 @@ export function useCategories(): UseCategoriesResult {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:1002/api/categories');
+      const response = await fetch('http://localhost:1002/api/categories/all');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
       const data: MainCategory[] = await response.json();
-      console.log('Fetched all categories:', data);
       setAllCategories(data);
       fetchStatusRef.current.allCategoriesFetched = true;
     } catch (err) {
@@ -59,7 +58,6 @@ export function useCategories(): UseCategoriesResult {
     setLoading(false);
     setError(null);
     try {
-      console.log('Fetching main category:', id);
       const response = await fetch(`http://localhost:1002/api/categories/main/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch main category');
@@ -82,7 +80,6 @@ export function useCategories(): UseCategoriesResult {
       const url = mainCategoryId
         ? `http://localhost:1002/api/categories/sub?mainCategoryId=${mainCategoryId}`
         : 'http://localhost:1002/api/categories/sub';
-      console.log('Fetching sub categories:', { mainCategoryId });
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch sub categories');
@@ -105,7 +102,6 @@ export function useCategories(): UseCategoriesResult {
       const url = subCategoryId
         ? `http://localhost:1002/api/categories/subsub?subCategoryId=${subCategoryId}`
         : 'http://localhost:1002/api/categories/subsub';
-      console.log('Fetching sub-sub categories:', { subCategoryId });
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch sub-sub categories');

@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { useAuth } from '../../../contexts/authContext'
 import { TextInput } from '../../ui/text-input'
 import { PasswordInput } from '../../ui/password-input'
 import { PhoneInput } from '../../ui/phone-input'
 import './form.css'
 
 interface FormData {
-  name: string
+  username: string
   email: string
   zipcode: string
   city: string
@@ -16,23 +19,17 @@ interface FormData {
   password: string
   confirmPassword: string
   acceptTerms: boolean
+  firstname: string
+  lastname: string
 }
 
 interface FormErrors {
-  name?: string
-  email?: string
-  zipcode?: string
-  city?: string
-  phone?: string
-  address?: string
-  password?: string
-  confirmPassword?: string
-  acceptTerms?: string
+  [key: string]: string
 }
 
 export function SignUpForm() {
   const [formData, setFormData] = useState<FormData>({
-    name: '',
+    username: '',
     email: '',
     zipcode: '',
     city: '',
@@ -40,11 +37,18 @@ export function SignUpForm() {
     address: '',
     password: '',
     confirmPassword: '',
-    acceptTerms: false
+    acceptTerms: false,
+    firstname: '',
+    lastname: '',
   })
 
   const [errors, setErrors] = useState<FormErrors>({})
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { register } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/'
 
   const validateField = (name: keyof FormData, value: string | boolean): string | undefined => {
     if (isSubmitted && typeof value === 'string' && value.trim() === '') {
@@ -85,14 +89,15 @@ export function SignUpForm() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitted(true)
+    setIsLoading(true)
     const newErrors: FormErrors = {}
 
     Object.entries(formData).forEach(([key, value]) => {
       const error = validateField(key as keyof FormData, value)
-      if (error) newErrors[key as keyof FormErrors] = error
+      if (error) newErrors[key] = error
     })
 
     if (!formData.acceptTerms) {
@@ -102,8 +107,24 @@ export function SignUpForm() {
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length === 0) {
-      // Handle form submission
-      console.log(formData)
+      try {
+        const { confirmPassword, acceptTerms, ...userData } = formData
+        await register({
+          ...userData,
+          street: userData.address,
+        })
+        router.push(redirect)
+      } catch (error) {
+        if (error instanceof Error) {
+          setErrors({ ...newErrors, general: error.message })
+        } else {
+          setErrors({ ...newErrors, general: 'An unexpected error occurred. Please try again.' })
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    } else {
+      setIsLoading(false)
     }
   }
 
@@ -111,17 +132,19 @@ export function SignUpForm() {
     <div className="container">
       <h1 className="title">SIGN UP</h1>
       <p className="signin">
-        ALREADY HAVE AN ACCOUNT? <a href="/signin">SIGN IN</a>
+        ALREADY HAVE AN ACCOUNT? <Link href="/login">SIGN IN</Link>
       </p>
 
       <form onSubmit={handleSubmit} className="form">
+        {errors.general && <div className="error general-error">{errors.general}</div>}
+        
         <TextInput
-          label="Name (Firstname and Lastname)"
-          name="name"
-          value={formData.name}
+          label="Username"
+          name="username"
+          value={formData.username}
           onChange={handleInputChange}
-          onBlur={() => handleBlur('name')}
-          error={errors.name}
+          onBlur={() => handleBlur('username')}
+          error={errors.username}
         />
 
         <TextInput
@@ -181,6 +204,24 @@ export function SignUpForm() {
           error={errors.address}
         />
 
+        <TextInput
+          label="First Name"
+          name="firstname"
+          value={formData.firstname}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('firstname')}
+          error={errors.firstname}
+        />
+
+        <TextInput
+          label="Last Name"
+          name="lastname"
+          value={formData.lastname}
+          onChange={handleInputChange}
+          onBlur={() => handleBlur('lastname')}
+          error={errors.lastname}
+        />
+
         <PasswordInput
           label="Password (At least 8 characters, one uppercase, one number)"
           name="password"
@@ -227,10 +268,13 @@ export function SignUpForm() {
           {errors.acceptTerms && <span className="error">{errors.acceptTerms}</span>}
         </div>
 
-        <button type="submit" className="submit">
-          SIGN UP
+        <button type="submit" className="submit" disabled={isLoading}>
+          {isLoading ? 'SIGNING UP...' : 'SIGN UP'}
         </button>
       </form>
     </div>
   )
 }
+
+export default SignUpForm
+

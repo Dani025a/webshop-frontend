@@ -1,0 +1,33 @@
+.wishlist-list {
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .wishlist-list__header {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .wishlist-list__header {
+      display: grid;
+      grid-template-columns: 1fr 150px 50px;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  
+    .wishlist-list__header-product {
+      text-align: left;
+    }
+  
+    .wishlist-list__header-price {
+      text-align: right;
+    }
+  
+    .wishlist-list__header-remove {
+      text-align: center;
+    }
+  }
+  
+  

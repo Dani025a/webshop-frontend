@@ -2,7 +2,7 @@
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { FilterOption, FilterValue } from "../../../types/types"
+import { FilterOption, FilterValue } from "@/types/types"
 
 interface CheckboxFilterProps {
   filter: FilterOption
@@ -20,20 +20,21 @@ export default function CheckboxFilter({ filter, selectedValues, onChange }: Che
   }
 
   return (
-    <div className="filter-group">
-      <h3 className="filter-title">{filter.name}</h3>
-      <div className="filter-options">
+    <div className="filter-group space-y-2">
+      <h3 className="filter-title text-sm font-medium">{filter.name}</h3>
+      <div className="filter-options space-y-2">
         {filter.filterValues.map((value: FilterValue) => (
           <div key={value.id} className="filter-option">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               <Checkbox
                 id={`${filter.id}-${value.id}`}
                 checked={selectedValues.includes(value.value)}
                 onCheckedChange={(checked) => handleCheckboxChange(value.value, checked as boolean)}
+                className="w-6 h-6 flex-shrink-0"
               />
               <Label
                 htmlFor={`${filter.id}-${value.id}`}
-                className="text-sm font-normal cursor-pointer"
+                className="text-sm font-normal cursor-pointer flex-grow"
               >
                 {value.value}
               </Label>

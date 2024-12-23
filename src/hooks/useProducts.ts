@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Product, GetProductsOptions } from '../types/types'
+import { Product, GetProductsOptions } from '@/types/types'
 
 export function useProducts(initialOptions: GetProductsOptions = {}, onProductsUpdate?: (products: Product[]) => void) {
   const [products, setProducts] = useState<Product[]>([])
@@ -13,9 +13,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
     const stringifiedOptions = JSON.stringify(options)
     const stringifiedPrevOptions = JSON.stringify(prevOptionsRef.current)
 
-    console.log('fetchProducts called with options:', options);
-    console.log('Previous options:', prevOptionsRef.current);
-    console.log('Initial options:', initialOptions);
 
     if (stringifiedOptions === stringifiedPrevOptions) {
       console.log('Options unchanged, skipping fetch')
@@ -25,12 +22,8 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
     setLoading(true)
     setError(null)
 
-    console.log('Fetching products with options:', options)
-
     try {
       const url = 'http://localhost:1002/api/products'
-      console.log('Fetching products from:', url)
-      console.log('Request body:', JSON.stringify(options))
 
       const response = await fetch(url, {
         method: 'POST',
@@ -45,7 +38,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
       }
 
       const data: Product[] = await response.json()
-      console.log('Fetched products:', data)
 
       setProducts(data)
       if (onProductsUpdate) {
@@ -67,7 +59,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
 
   const updateProducts = useCallback((newOptions: Partial<GetProductsOptions>) => {
     const updatedOptions = { ...prevOptionsRef.current, ...newOptions }
-    console.log('Updating products with options:', updatedOptions)
     fetchProducts(updatedOptions)
   }, [fetchProducts])
 
@@ -85,7 +76,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
       }
 
       const data: Product = await response.json()
-      console.log('Fetched product:', data)
 
       setProducts([data])
       if (onProductsUpdate) {
@@ -106,7 +96,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
 
     try {
       const url = 'http://localhost:1002/api/products'
-      console.log('Fetching all products from:', url)
 
       const response = await fetch(url, {
         method: 'GET',
@@ -120,7 +109,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
       }
 
       const data: Product[] = await response.json()
-      console.log('Fetched all products:', data)
 
       setProducts(data)
       if (onProductsUpdate) {
@@ -143,7 +131,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
 
     try {
       const url = `http://localhost:1002/api/products/search?q=${encodeURIComponent(query)}`
-      console.log('Searching products from:', url)
 
       const response = await fetch(url, {
         method: 'GET',
@@ -157,7 +144,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
       }
 
       const data: Product[] = await response.json()
-      console.log('Search results:', data)
 
       setProducts(data)
       if (onProductsUpdate) {
@@ -165,7 +151,6 @@ export function useProducts(initialOptions: GetProductsOptions = {}, onProductsU
       }
       return data
     } catch (err) {
-      console.error('Error searching products:', err)
       setError(err instanceof Error ? err.message : 'An unknown error occurred')
       setProducts([])
       throw err

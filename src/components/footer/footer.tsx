@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-      <footer className="w-full border-t bg-gray-50">
+      <footer className="w-full border-t bg-gray-50 mt-auto">
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-600 uppercase">
             © {new Date().getFullYear()} dgelectronics.dk all rights reserved.

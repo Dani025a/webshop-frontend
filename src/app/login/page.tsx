@@ -1,8 +1,9 @@
 'use client'
 import React from 'react';
-import { LoginForm } from "../../components/login/form/form";
+import { LoginForm } from "@//components/login/form/form";
+import { PublicRoute } from '@/components/publicRoutes';
 
-export default function Login() {
+function Login() {
   return (
     <div className="login-page">
       <LoginForm />
@@ -10,3 +11,4 @@ export default function Login() {
   );
 }
 
+export default PublicRoute(Login)

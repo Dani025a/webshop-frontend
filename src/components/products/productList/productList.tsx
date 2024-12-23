@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import ProductCard from '../productCard/productCard'
-import { Product } from '../../../types/types'
+import { Product } from '@/types/types'
 import './productList.css'
 
 interface ProductListProps {

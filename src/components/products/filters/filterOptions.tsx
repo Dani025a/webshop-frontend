@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { FilterDefinition, FilterType } from '../../../types/types'
+import { FilterDefinition, FilterType } from '@/types/types'
 
 interface FilterOptionsProps {
   filter: FilterDefinition;

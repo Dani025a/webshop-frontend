@@ -1,20 +1,24 @@
 .radio-group {
     display: grid;
-    gap: 8px;
+    gap: 12px;
   }
   
   .radio-group-item {
+    all: unset;
     width: 16px;
     height: 16px;
     border-radius: 50%;
     border: 2px solid #4a5568;
-    display: flex;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    line-height: 1;
   }
   
-  .radio-group-item:focus {
+  .radio-group-item:focus-visible {
     outline: 2px solid #4299e1;
     outline-offset: 2px;
   }
@@ -24,17 +28,46 @@
   }
   
   .radio-group-indicator {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
   }
   
   .radio-group-icon {
     width: 8px;
     height: 8px;
     fill: #4299e1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .radio-label-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  
+  @media (max-width: 768px) {
+    .radio-group-item {
+      width: 20px;
+      height: 20px;
+    }
+  
+    .radio-group-icon {
+      width: 10px;
+      height: 10px;
+    }
+  
+    .radio-label-container {
+      gap: 12px;
+      padding: 8px 0;
+    }
   }
   
   

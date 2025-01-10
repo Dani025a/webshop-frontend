@@ -65,12 +65,7 @@ export default function CheckoutPage() {
         metadata: { }
       })
       
-      
-      if (result.sessionId) {
-        clearCart()
-        // Redirect to success page or handle success scenario
-        router.push('/payment-success')
-      }
+    
     } catch (error) {
       console.error('Failed to create payment session:', error)
     }
